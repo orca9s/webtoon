@@ -7,6 +7,10 @@ verify_ssl = true
 
 [packages]
 django = "*"
+beautifulsoup4 = "*"
+lxml = "*"
+jupyter = "*"
+requests = "*"
 
 [requires]
 python_version = "3.6"
