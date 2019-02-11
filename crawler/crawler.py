@@ -8,6 +8,9 @@ from data import Episode, Webtoon
 
 
 class Crawler:
+    def __init__(self):
+        self.webtoon_dict = {}
+
     def get_html(self):
         """
         전체 웹툰 목록의 HTML을 리턴한다.
@@ -20,7 +23,7 @@ class Crawler:
         root = os.path.dirname(os.path.abspath(__file__))
         file_path = os.path.join(root, 'saved_data', 'weekday.html')
 
-        if os.path.exists():
+        if os.path.exists(file_path):
             # 경로가 존재하면
             # 해당 경로의 파일을 읽기
             html = open(file_path, 'rt').read()
@@ -31,6 +34,14 @@ class Crawler:
             html = response.text
             open(file_path, 'wt').write()
         return html
+
+    def get_webtoon(self, title):
+        """
+        title이 제목인 webtoon객체를 가져옴
+        :param title:
+        :return:
+        """
+        pass
 
     def show_webtoon_list(self):
         """
