@@ -4,7 +4,7 @@ import re
 import requests
 from bs4 import BeautifulSoup
 
-from data import Episode, Webtoon
+from data import Episode, Webtoon, WebtoonNotExist
 
 
 class Crawler:
@@ -35,7 +35,7 @@ class Crawler:
             os.makedirs(dir_path, exist_ok=True)
             response = requests.get('https://comic.naver.com/webtoon/weekday.nhn')
             html = response.text
-            open(file_path, 'wt').write()
+            open(file_path, 'wt').write(html)
         return html
 
     @property
@@ -72,7 +72,10 @@ class Crawler:
         """
         # 여기서 _webtoon_dict를 안불르는 이유는 아래의 코드를 실행하면
         # 위의 property함수가 실행되고 그 함수가 _webtoon_dict를 리턴
-        return self.webtoon_dict[title]
+        try:
+            self.webtoon_dict[title]
+        except KeyError:
+            raise WebtoonNotExist(title)
 
     def show_webtoon_list(self):
         for title, webtoon in self.webtoon_dict.items():

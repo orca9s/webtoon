@@ -1,3 +1,4 @@
+/crawler/saved_data
 # Project Secrets
 /.secrets
 # Django Static files path
