@@ -9,7 +9,7 @@ from data import Episode, Webtoon
 
 class Crawler:
     def __init__(self):
-        self.webtoon_dict = {}
+        self._webtoon_dict = {}
 
     def get_html(self):
         """
@@ -35,13 +35,41 @@ class Crawler:
             open(file_path, 'wt').write()
         return html
 
+    @property
+    def webtoon_dict(self):
+        # 웹툰이 있는경우 그대로 리턴
+        # 없으면 실행 없는경우는 초기화 메서드가 실행될 때
+        if not self._webtoon_dict:
+            html = self.get_html()
+            soup = BeautifulSoup(html, 'lxml')
+            col_list = soup.select_one('div.list_area.daily_all').select('.col')
+            li_list = []
+            for col in col_list:
+                col_li_list = col.select('.col_inner ul > li')
+                li_list.extend(col_li_list)
+
+            for li in li_list:
+                href = li.select_one('a.title')['href']
+                m = re.search(r'titleId=(\d+)', href)
+                webtoon_id = m.group(1)
+                title = li.select_one('a.title').get_text(strip=True)
+                url_thumbnail = li.select_one('.thumb > a > img')['src']
+
+                if title not in self._webtoon_dict:
+                    new_webtoon = Webtoon(webtoon_id, title, url_thumbnail)
+                    self._webtoon_dict[title] = new_webtoon
+
+        return self._webtoon_dict
+
     def get_webtoon(self, title):
         """
         title이 제목인 webtoon객체를 가져옴
         :param title:
         :return:
         """
-        pass
+        # 여기서 _webtoon_dict를 안불르는 이유는 아래의 코드를 실행하면
+        # 위의 property함수가 실행되고 그 함수가 _webtoon_dict를 리턴
+        return self.webtoon_dict[title]
 
     def show_webtoon_list(self):
         """
@@ -54,25 +82,6 @@ class Crawler:
         5. dict를 순회하며 제목들을 출력
        :return:
         """
-        html = self.get_html()
-        soup = BeautifulSoup(html, 'lxml')
-        col_list = soup.select_one('div.list_area.daily_all').select('.col')
-        li_list = []
-        for col in col_list:
-            col_li_list = col.select('.col_inner ul > li')
-            li_list.extend(col_li_list)
-
-        webtoon_dict = {}
-        for li in li_list:
-            href = li.select_one('a.title')['href']
-            m = re.search(r'titleId=(\d+)', href)
-            webtoon_id = m.group(1)
-            title = li.select_one('a.title').get_text(strip=True)
-            url_thumbnail = li.select_one('.thumb > a > img')['src']
-
-            if title not in webtoon_dict:
-                new_webtoon = Webtoon(webtoon_id, title, url_thumbnail)
-                webtoon_dict[title] = new_webtoon
 
         for title, webtoon in webtoon_dict.items():
             print(title)
