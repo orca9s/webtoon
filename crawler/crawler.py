@@ -21,7 +21,8 @@ class Crawler:
         # HTTP요청을 매번 할 필요가 없음
         # 파일로 저장해두고 필요할 때 갱신
         root = os.path.dirname(os.path.abspath(__file__))
-        file_path = os.path.join(root, 'saved_data', 'weekday.html')
+        dir_path = os.path.join(root, 'saved_data')
+        file_path = os.path.join(dir_path, 'weekday.html')
 
         if os.path.exists(file_path):
             # 경로가 존재하면
@@ -30,6 +31,8 @@ class Crawler:
         else:
             # 경로가 존재하지 않으면
             # HTTP요청결과를 가져오고, 이후 다시 요청시 읽기위한 파일 기록
+            # 파일을 저장할 폴더를 생성, 이미 존재하는 경우 무시하기 위해 exist_ok인수추가
+            os.makedirs(dir_path, exist_ok=True)
             response = requests.get('https://comic.naver.com/webtoon/weekday.nhn')
             html = response.text
             open(file_path, 'wt').write()
@@ -72,18 +75,7 @@ class Crawler:
         return self.webtoon_dict[title]
 
     def show_webtoon_list(self):
-        """
-        전체 웹툰 제목을 출력해줌
-
-        1. requests를 사용해서 웹툰 목록 URL의 내용을 가져옴
-        2. BeautifulSoup을 사용해서 가져온 HTML데이터를 파싱
-        3. 파싱한 결과를 사용해서 Webtoon클래스 인스턴스들을 생성
-        4. 생성한 인스턴스 목록을 dict에 제목을 key를 사용해서 할당
-        5. dict를 순회하며 제목들을 출력
-       :return:
-        """
-
-        for title, webtoon in webtoon_dict.items():
+        for title, webtoon in self.webtoon_dict.items():
             print(title)
 
 
