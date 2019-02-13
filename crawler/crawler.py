@@ -87,7 +87,7 @@ if __name__ == '__main__':
     crawler = Crawler()
     # 만들어질 붕어
     # crawler.show_webtoon_list()
-    w = crawler.get_webtoon('신의 탑')
+    w = crawler.get_webtoon('자취로운 생활')
     print(w.episode_dict)
 
 
