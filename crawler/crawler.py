@@ -73,7 +73,7 @@ class Crawler:
         # 여기서 _webtoon_dict를 안불르는 이유는 아래의 코드를 실행하면
         # 위의 property함수가 실행되고 그 함수가 _webtoon_dict를 리턴
         try:
-            self.webtoon_dict[title]
+            return self.webtoon_dict[title]
         except KeyError:
             raise WebtoonNotExist(title)
 
@@ -86,6 +86,8 @@ if __name__ == '__main__':
     # 붕어빵 틀
     crawler = Crawler()
     # 만들어질 붕어
-    crawler.show_webtoon_list()
+    # crawler.show_webtoon_list()
+    w = crawler.get_webtoon('신의 탑')
+    print(w.episode_dict)
 
 
